@@ -1,0 +1,38 @@
+---
+title: "206_a5_collab_pmoore"
+author: "Peyton Moore, Dylan Glave"
+date: "11/26/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, include = FALSE)
+```
+
+## R Markdown
+
+In this report we'll be looking at the size, abundance of  Pacific giant salamanders (Dicamptodon tenebrosus). 
+
+
+```{r}
+# First, loading in necessary packages
+library(tidyverse)
+library(janitor)
+library(kableExtra)
+```
+
+
+```{r}
+# Reading in dataframe
+mack_creek_raw <- read_csv("mack_creek_vertebrates.csv")
+```
+
+```{r}
+# Looking at salamander-specific data (species code DITE)
+salamander_data_total <- mack_creek_raw %>% 
+  clean_names() %>% 
+  filter(species == "DITE")
+```
+
+
+
