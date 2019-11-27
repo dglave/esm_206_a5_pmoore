@@ -32,6 +32,24 @@ mack_creek_raw <- read_csv("mack_creek_vertebrates.csv")
 salamander_data_total <- mack_creek_raw %>% 
   clean_names() %>% 
   filter(species == "DITE")
+
+salamander_by_year <- salamander_data_total %>% 
+  group_by(section) %>% 
+  count(year)
+```
+
+
+```{r}
+### Let's look at some explaoratory data to see spread, potentially normal distribution. 
+
+ggplot(data = salamander_by_year, aes(x = n)) +
+  geom_histogram()
+
+ggplot(data = salamander_by_year, aes(sample = n)) +
+  geom_qq() 
+
+## This qq plot is looking pretty dang normally distributed, the histogram has some gaps, potentially multiple modes! 
+
 ```
 
 
