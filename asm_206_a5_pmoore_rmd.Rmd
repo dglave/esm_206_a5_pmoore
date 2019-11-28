@@ -34,5 +34,139 @@ salamander_data_total <- mack_creek_raw %>%
   filter(species == "DITE")
 ```
 
+### *Results A:* Visually compare annual salamander counts in old growth (OG) and clear cut (CC) sections of Mack Creek
+
+For all years when Pacific giant salamander observations were recorded in the study, find the total annual Pacific giant salamander counts for the two sections of Mack Creek. Create a finalized graph to show the changes in annual counts for each section over time, add a figure caption, and briefly describe the trends in text. 
+
+
+```{r}
+# Data frame containing annual salamander counts in OG and CC sections 
+
+salamander_count <- salamander_data_total %>% 
+  select(year, section, sampledate, species) %>% 
+  group_by(year) %>% 
+  count(section)
+
+#change OG and CC to Clear Cut and Old Growth
+
+salamander_count$section <- gsub("CC", "Clear Cut", salamander_count$section)
+
+salamander_count$section <- gsub("OG", "Old Growth", salamander_count$section)
+
+#Graph annual abundance (bar graph? kinda gross but can change later)
+annual_abundance <- ggplot(salamander_count, 
+       aes(x = year, y = n)) +
+  geom_bar(position = "dodge",
+           stat = "identity", 
+           aes(fill = section)) +
+  labs(x = "Year", 
+       y = "Salamander Count", 
+       title = "Salamander Annual Abundance",
+       caption = "***Figure 1: Insert caption here***")
+
+annual_abundance
+  
+```
+
+
+### *Results B:* Table of 2017 salamander counts by channel classification (pool, cascades and side-channel) in old growth (OG) and clear cut (CC) sections of Mack Creek 
+
+Using only Pacific giant salamander observations from 2017, create a finalized table showing the counts and proportions of salamanders observed in different channel classifications (pool, cascade, or side-channel) within Mack Creek for the two sections (OG and CC). Add a table caption above the table. Note: We’re only interested in Pacific giant salamanders observed in the creek, so you should exclude salamanders observed in isolated pools (IP) disconnected from the channel. 
+
+
+```{r}
+# Create data frame with salamander counts by channel classification and section
+channel_counts <- salamander_data_total %>% 
+  select(year, section, unittype) %>% 
+  filter(year == 2017) %>% 
+  filter(unittype %in% c("C", "P", "SC")) %>% 
+  count(section, unittype) %>% 
+  pivot_wider(names_from = unittype, values_from = n) %>% 
+  rename("Section" = section, 
+         #"Clear Cut" = CC, 
+         #"Old Growth" = OG, 
+         "Cascades" = C, 
+         "Pool" = P, 
+         "Side-channel" = SC)
+
+# Rename CC and OG 
+channel_counts$Section <- gsub("CC", "Clear Cut", channel_counts$Section)
+
+channel_counts$Section <- gsub("OG", "Old Growth", channel_counts$Section)
+
+#Make percentages table 
+channel_proportions <- channel_counts %>% 
+  adorn_percentages((denominator = "row")) %>% 
+  adorn_pct_formatting(digits = 0) %>% 
+  adorn_ns(position = "front") # this is the part that gives you the count and the percentages in the table 
+  
+# Final Table 
+
+channel_proportions_table <- channel_proportions %>% 
+  kable(col.names = c("Creek Section",
+                      "Cascades",
+                      "Pool", 
+                      "Side-channel"
+                      )) %>% 
+  add_header_above(c("2017 Salamander Counts by Channel Classification in Old Growth and Clear Cut Sections of Mack Creek" = 4)) %>% 
+  kable_styling(bootstrap_options = c("hover",
+                                      "condensed", 
+                                      "responsive"), 
+                fixed_thead = T)
+
+channel_proportions_table
+
+
+```
+
+
+### *Results C:* Using the 2017 counts found in Results B above, answer: is there a significant difference in where in the channel Pacific giant salamanders are located (pool, cascade or side channel) between the two sections (old growth and clear cut)?
+
+Another way to ask this: Regarding the locations where salamanders were observed in Mack Creek in 2017, is there a significant effect of forest condition (old growth or clear cut) on where in the channel salamanders are found (channel classification)? Report your statistical findings in text, in the context of the actual counts / proportions you present in the table. 
+
+```{r}
+channel_chi <- channel_counts %>% 
+  select(-Section)
+
+channel_prop_chi <- chisq.test(channel_chi)
+
+channel_prop_chi #not significant, retain null that Section and Unit Type are independent 
+
+```
+
+### *Results D.* Compare weights of Pacific giant salamanders in clear cut and old growth forest sections of the creek in 2017. 
+
+Only considering creek section (OG or CC) as a variable (not further factoring by channel classification), answer: Is there a significant difference in mean weights for Pacific giant salamanders observed in the two forest sections (clear cut and old growth) in 2017? 
+
+
+```{r}
+
+
+
+```
+
+### *Results E.* Compare weights of Pacific giant salamanders in pools, cascades and side-channels of Mack Creek in 2017. 
+
+ Pool salamander observations from both the old growth and clear cut sections for this part (i.e., you will not consider “section” as a factor here).
+
+- First, visually compare Pacific giant salamander weights between the three channel classifications. You can choose how to best visualize the weights between the three groups (Beeswarm? Jitter? Histogram? Density? Something else?), but you should indicate values for the mean, and standard deviation, standard error or a 95% confidence interval. Add a figure caption. 
+- Second, answer: Is there a significant difference in mean weights for Pacific giant salamanders observed in pools vs. cascades vs. side-channels in 2017? Describe the results of your statistical analysis in text, within the context of broader (and more important) measures of differences between groups (some options: means differences, effect sizes, percent differences, etc). 
+-Third, describe any concerns you have about comparing means across the groups. What might be another option to consider moving forward with the analysis? (You don’t need to actually do that here, just describe briefly in 1-2 sentences.)
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
