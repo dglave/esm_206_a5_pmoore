@@ -19,6 +19,13 @@ In this report we'll be looking at the size, abundance of  Pacific giant salaman
 library(tidyverse)
 library(janitor)
 library(kableExtra)
+devtools::install_github("dill/beyonce")
+library(beyonce)
+install.packages("cowplot")
+library(cowplot)
+library(plotly)
+install.packages('beeswarm')
+library(ggbeeswarm)
 ```
 
 
@@ -80,7 +87,8 @@ annual_abundance <- ggplot(salamander_count,
   labs(x = "Year", 
        y = "Salamander Count", 
        title = "Salamander Annual Abundance",
-       caption = "***Figure 1: Insert caption here***")
+       caption = "***Figure 1: Insert caption here***") +
+  theme_bw()
 
 annual_abundance
   
@@ -152,16 +160,46 @@ channel_prop_chi #not significant, retain null that Section and Unit Type are in
 
 ```
 
+
+
+
+
+
 ### *Results D.* Compare weights of Pacific giant salamanders in clear cut and old growth forest sections of the creek in 2017. 
 
 Only considering creek section (OG or CC) as a variable (not further factoring by channel classification), answer: Is there a significant difference in mean weights for Pacific giant salamanders observed in the two forest sections (clear cut and old growth) in 2017? 
 
 
 ```{r}
+#Starting with df to look at weigths of Giant Salamanders
+salamander_weight_data <- salamander_data_total %>% 
+  select(year, weight, section) %>% 
+  filter(year == 2017)
 
+view(salamander_weight_data)
+  
+### Creating a summary table to compare means of Clear Cut, Old Growth Forest. Creating summary table with acutal means, SD, as well as a T test table.  
 
+weight_summary <- salamander_weight_data %>% 
+  group_by(section) %>% 
+  summarize(mean_weight = mean(weight, na.rm = TRUE,
+            sd_weight = sd(weight, na.rm = TRUE)))
+  
+cc_weight <- salamander_weight_data %>% 
+  filter(section == "CC") %>% 
+  pull(weight)
+
+og_weight <- salamander_weight_data %>% 
+  filter(section == "OG") %>% 
+  pull(weight)
+
+t.test(cc_weight, og_weight)
 
 ```
+
+- Here we see mean  weight totals if 7.8 in clear cut forests, and 6.6 in old growth areas. 
+- A P value of 0.09 leads us to believe that we do not have enough evidence to see these means as significantly different. 
+- However, Salamanders measured in clear cut forests are 18% heavier, on average, than their old growth counterparts. This remains notable, even if it doesn't follow the rule of "statistical signifiance" (Not sure how best to say this yet, but it's definitely worth noting)
 
 ### *Results E.* Compare weights of Pacific giant salamanders in pools, cascades and side-channels of Mack Creek in 2017. 
 
@@ -173,9 +211,44 @@ Only considering creek section (OG or CC) as a variable (not further factoring b
 
 ```{r}
 
+### Creating df looking at creek areas for 2017, disregading the section now. 
+
+channel_breakdown <- salamander_data_total %>% 
+  select(year, unittype, weight) %>% 
+  filter(year == 2017) %>% 
+  filter(unittype %in% c("C", "P", "SC")) %>% 
+  group_by(unittype) %>%
+  rename("Channel" = unittype,
+         "Cascades" = C, 
+         "Pool" = P, 
+         "Side-channel" = SC)
+
+  
+   pivot_wider(names_from = unittype, values_from = weight) 
+  uncount(C, P, SC)
+  
+
 ```
 
 
+```{r}
+channel_graph <- ggplot(data = channel_breakdown, aes(x = unittype, y = weight, )) +
+  geom_violin(aes(fill = unittype), show.legend = FALSE) +
+  geom_boxplot(size = .5,
+               width = .3) +
+  stat_boxplot(geom ='errorbar', 
+               width = .3) + 
+  scale_x_discrete(labels = c("Cascade", "Pool", "Side Channel")) +
+  scale_fill_manual(values = beyonce_palette(18)) +
+  labs(x = "River Channel",
+       y = "Weight in Grams", 
+       title = "Salamander Weight Distribution Through \n Channels of Mack Creek") +
+  coord_flip() +
+  theme_bw()
+ggplotly(channel_graph)
+channel_graph
+
+```
 
 
 
