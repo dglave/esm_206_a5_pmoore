@@ -24,7 +24,17 @@ library(beyonce)
 # install.packages("cowplot")
 library(cowplot)
 library(car)
+library(here)
+library(forcats)
 ```
+
+
+ ### Introduction 
+ 
+ 
+ (`r here::here("salamander.jpg")`)
+
+
 
 
 ```{r}
