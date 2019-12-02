@@ -183,7 +183,7 @@ salamander_weight_data <- salamander_data_total %>%
   select(year, weight, section) %>% 
   filter(year == 2017)
 
-view(salamander_weight_data)
+# view(salamander_weight_data) 
   
 ### Creating a summary table to compare means of Clear Cut, Old Growth Forest. Creating summary table with acutal means, SD, as well as a T test table.  
 
@@ -223,7 +223,7 @@ t.test(cc_weight, og_weight)
 channel_breakdown <- salamander_data_total %>% 
   select(year, unittype, weight) %>% 
   filter(year == 2017) %>% 
-  filter(unittype %in% c("C", "P", "SC")) %>% 
+  filter(unittype %in% c("C", "P", "SC")) # %>%  
  # group_by(unittype) %>%
   #rename("Channel" = unittype,
         # "Cascades" = C, 
