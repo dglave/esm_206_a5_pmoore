@@ -23,6 +23,7 @@ library(kableExtra)
 library(beyonce)
 # install.packages("cowplot")
 library(cowplot)
+library(car)
 ```
 
 
@@ -230,8 +231,14 @@ channel_breakdown <- salamander_data_total %>%
         # "Pool" = P, 
          #"Side-channel" = SC)
 
-  
-  
+anova_channel <- channel_breakdown %>% 
+  select(unittype,weight)
+
+aov(weight ~ unittype, data = anova_channel)
+
+summary(anova_channel)
+
+TukeyHSD(anova_channel)
   
 
 ```
@@ -252,6 +259,8 @@ channel_graph <- ggplot(data = channel_breakdown, aes(x = unittype, y = weight, 
   coord_flip() +
   theme_bw()
 channel_graph
+
+
 
 ```
 
