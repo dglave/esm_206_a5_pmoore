@@ -32,7 +32,7 @@ library(forcats)
  ### Introduction 
  
 
-![Young salamander surveying a crunchy landscape: a wet leaf] (`r here::here("salamander.jpg")`)
+!["Young salamander surveying a crunchy landscape: a wet leaf"](salamander.jpg)
 
 
 
