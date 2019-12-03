@@ -31,8 +31,8 @@ library(forcats)
 
  ### Introduction 
  
- 
- (`r here::here("salamander.jpg")`)
+
+![Young salamander surveying a crunchy landscape: a wet leaf] (`r here::here("salamander.jpg")`)
 
 
 
@@ -234,22 +234,22 @@ t.test(cc_weight, og_weight)
 channel_breakdown <- salamander_data_total %>% 
   select(year, unittype, weight) %>% 
   filter(year == 2017) %>% 
-  filter(unittype %in% c("C", "P", "SC")) # %>%  
- # group_by(unittype) %>%
-  #rename("Channel" = unittype,
-        # "Cascades" = C, 
-        # "Pool" = P, 
-         #"Side-channel" = SC)
+  filter(unittype %in% c("C", "P", "SC")) %>%   
+  group_by(unittype) 
 
 anova_channel <- channel_breakdown %>% 
   select(unittype,weight)
 
-aov(weight ~ unittype, data = anova_channel)
+leveneTest(weight ~ unittype, data = anova_channel)
 
-summary(anova_channel)
+aov_salamander <- aov(weight ~ unittype, data = anova_channel)
 
-TukeyHSD(anova_channel)
-  
+aov_salamander
+
+summary(aov_salamander)
+
+TukeyHSD(aov_salamander)
+
 
 ```
 
