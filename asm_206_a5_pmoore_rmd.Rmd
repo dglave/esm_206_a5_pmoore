@@ -29,7 +29,7 @@ library(forcats)
 ```
 
 
- ### Introduction 
+### Introduction 
  
 
 !["Young salamander surveying a crunchy landscape: a wet leaf"](salamander.jpg)
@@ -95,7 +95,7 @@ annual_abundance <- ggplot(salamander_count,
   labs(x = "Year", 
        y = "Salamander Count", 
        title = "Mack Creek Annual Salamander Abundance",
-       caption = "***Figure 1: Insert caption here***") +
+       caption = "***Figure 1. Salamander Annual abundance from 1993-2007 in Mack Creek. Dark bars represent counts of salamanders in sections of the creek that were characterized by clear cut forest and lighter bars indicate salamander counts in creek sections characterized by old growth forests.***") +
   theme_bw() +
   theme(legend.position= "bottom",
     legend.title = element_blank(), 
