@@ -285,7 +285,7 @@ channel_graph
 ```
 
 
-### *Summary*
+### *Summary:*
 
 
 - There is no clear difference between salamander abundance between forest sections. 
