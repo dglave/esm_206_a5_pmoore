@@ -1,5 +1,5 @@
 ---
-title: "206_a5_collab_pmoore"
+title: "ESM 206 Assignment 5: Giant Pacific Salamanders of Mack Creek"
 author: "Peyton Moore, Dylan Glave"
 date: "11/26/2019"
 output: html_document
@@ -8,10 +8,6 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, include = FALSE)
 ```
-
-## R Markdown
-
-In this report we'll be looking at the size, abundance of  Pacific giant salamanders (Dicamptodon tenebrosus). 
 
 
 ```{r}
@@ -29,10 +25,12 @@ library(forcats)
 ```
 
 
- ### Introduction 
+### *Introduction* 
  
+Much of forests in Oregon were cut down for lumber and grazeland during the second half of the 20th century (Bolsinger & Wattle, 1993.) Such changes in habitat can play a major role in the health of the Pacific Giant Salamander (Dicamptodon tenebrosus), our species of study. Salamander abundance and health has been measured from 1993-2017 within Mack Creek (Gregory, 2016.) This study intends to analyze how salamanders differ across years and habitat variations within the creek. As the largest amphibian in North America, the salamander species gives us an indicator species to environmental conditions impact the wildlife within Willamette National Forest, where forest conditions have returned, after millions of acres were cut down (Bolsinger & Wattle, 1993.) 
 
-!["Young salamander surveying a crunchy landscape: a wet leaf"](salamander.jpg)
+
+![*Young salamander surveying a crunchy landscape: wet leaves on a creek rock. (Credit: Gary Nafis)*](dtenebrosusjs2.jpg)
 
 
 
@@ -64,16 +62,22 @@ ggplot(data = salamander_by_year, aes(sample = n)) +
   geom_qq() 
 
 ## This qq plot is looking pretty dang normally distributed, the histogram has some gaps, potentially multiple modes! 
-
 ```
 
-### *Results A:* Visually compare annual salamander counts in old growth (OG) and clear cut (CC) sections of Mack Creek
 
-For all years when Pacific giant salamander observations were recorded in the study, find the total annual Pacific giant salamander counts for the two sections of Mack Creek. Create a finalized graph to show the changes in annual counts for each section over time, add a figure caption, and briefly describe the trends in text. 
+### *Methods*
+The data utilized for this analysis was collected annually throughout both Clear Cut and Old Growth sections of Mack Creek. The same 150m were sampled throughout the 24 year period, and Pacific Giant Salamander abundance, length and weight were recorded. Utilizing this data we conducted analyses to better understand differences in salamander size and abundance in relation to habitat variations throughout the creek. We performed exploratory data visualization, chi squared analysis, a two sample t-test, one-way ANOVA and post-hoc Tukey test. A significance level of *a*=0.05 was used as a cutoff. All analyses were performed using R 3. 6. 1. 
+
+![*Map of Mack Creek located within H.J. Andrews Experimental Forest in Western Oregon. (Credit: Mosquera et al. 2018.)* 
+](map_mack.png)
+
+
+#### *Results A:* 
+
+Annual salamander abundance is displayed from 1993-2017, highlighting the comparison of sections of the creek in clear cut and old growth portions of forest (Figure 1). While there is slight variability, there is no clear difference in salamander abundance between clear cut and old growth forest. In general, abundance appears to have increased during the time period of study. 
 
 
 ```{r}
-# Data frame containing annual salamander counts in OG and CC sections 
 
 salamander_count <- salamander_data_total %>% 
   select(year, section, sampledate, species) %>% 
@@ -95,7 +99,7 @@ annual_abundance <- ggplot(salamander_count,
   labs(x = "Year", 
        y = "Salamander Count", 
        title = "Mack Creek Annual Salamander Abundance",
-       caption = "***Figure 1: Insert caption here***") +
+       caption = "Figure 1: Salamander abundace was measured from 1993-2017, with individual counts for Clear Cut and Old Growth Forests each year, delineated by color.") +
   theme_bw() +
   theme(legend.position= "bottom",
     legend.title = element_blank(), 
@@ -109,13 +113,14 @@ annual_abundance <- ggplot(salamander_count,
   scale_fill_manual(values = beyonce_palette(5))
 
 annual_abundance
-  
 ```
 
 
-### *Results B:* Table of 2017 salamander counts by channel classification (pool, cascades and side-channel) in old growth (OG) and clear cut (CC) sections of Mack Creek 
+```{r include=TRUE, echo = FALSE, warning = FALSE, message = FALSE}
 
-Using only Pacific giant salamander observations from 2017, create a finalized table showing the counts and proportions of salamanders observed in different channel classifications (pool, cascade, or side-channel) within Mack Creek for the two sections (OG and CC). Add a table caption above the table. Note: We’re only interested in Pacific giant salamanders observed in the creek, so you should exclude salamanders observed in isolated pools (IP) disconnected from the channel. 
+annual_abundance
+```
+
 
 
 ```{r}
@@ -159,14 +164,11 @@ channel_proportions_table <- channel_proportions %>%
                 fixed_thead = T)
 
 channel_proportions_table
-
-
 ```
 
 
-### *Results C:* Using the 2017 counts found in Results B above, answer: is there a significant difference in where in the channel Pacific giant salamanders are located (pool, cascade or side channel) between the two sections (old growth and clear cut)?
 
-Another way to ask this: Regarding the locations where salamanders were observed in Mack Creek in 2017, is there a significant effect of forest condition (old growth or clear cut) on where in the channel salamanders are found (channel classification)? Report your statistical findings in text, in the context of the actual counts / proportions you present in the table. 
+
 
 ```{r}
 channel_chi <- channel_counts %>% 
@@ -178,14 +180,21 @@ channel_prop_chi #not significant, retain null that Section and Unit Type are in
 
 ```
 
+#### *Results B & C:* 
+
+We evaluated the relationship between channel classification (Cascades, Pool and Side-Channel) and salamander abundance in both Old Growth and Clear Cut forest sections. While there are not clear trends between forest sections, the largest proportion of salamanders were found in Cascades, with Side-Channel and Pool creek sections following respectively. We conducted a chi squared analysis to determine if this relationship was statistically significant, and we did not find sufficient evidence to reject the null hypothesis that forest condition and channel classification are independent
+($\chi$^2^(`r channel_prop_chi$parameter`) = `r round(channel_prop_chi$statistic,2)`, *p* = `r round(channel_prop_chi$p.value, 2)`).
 
 
+**Table 1.** *Measuring 2017 salamander abundance relative to forest section, channel classification. Proportional abundance for Clear Cut and Old Growth forests are shown in parentheses to delineate channel. Chi-squared analysis detmerined this relationship to be statistically insignificant* *p* = `r round(channel_prop_chi$p.value, 2)`)
+```{r include=TRUE, echo = FALSE, warning = FALSE, message = FALSE}
+channel_proportions_table
+```
 
 
+#### *Results D:* 
 
-### *Results D.* Compare weights of Pacific giant salamanders in clear cut and old growth forest sections of the creek in 2017. 
-
-Only considering creek section (OG or CC) as a variable (not further factoring by channel classification), answer: Is there a significant difference in mean weights for Pacific giant salamanders observed in the two forest sections (clear cut and old growth) in 2017? 
+By analyzing the weights of Giant Pacific Salamanders in Old Growth and Clear Cut sections of Mack Creek we calculated mean salamander weights of 7.8 grams in Clear Cut areas, and 6.6 grams in Old Growth areas. The P-Value of 0.09 led us to conclude that the two means are not significantly different from one another. However, Salamanders measured in clear cut forests are 18% heavier, on average, than their old growth counterparts. This remains  a notable change, even as it does not meet statistical significance.  
 
 
 ```{r}
@@ -215,17 +224,10 @@ t.test(cc_weight, og_weight)
 
 ```
 
-- Here we see mean  weight totals if 7.8 in clear cut forests, and 6.6 in old growth areas. 
-- A P value of 0.09 leads us to believe that we do not have enough evidence to see these means as significantly different. 
-- However, Salamanders measured in clear cut forests are 18% heavier, on average, than their old growth counterparts. This remains notable, even if it doesn't follow the rule of "statistical signifiance" (Not sure how best to say this yet, but it's definitely worth noting)
 
-### *Results E.* Compare weights of Pacific giant salamanders in pools, cascades and side-channels of Mack Creek in 2017. 
 
- Pool salamander observations from both the old growth and clear cut sections for this part (i.e., you will not consider “section” as a factor here).
-
-- First, visually compare Pacific giant salamander weights between the three channel classifications. You can choose how to best visualize the weights between the three groups (Beeswarm? Jitter? Histogram? Density? Something else?), but you should indicate values for the mean, and standard deviation, standard error or a 95% confidence interval. Add a figure caption. 
-- Second, answer: Is there a significant difference in mean weights for Pacific giant salamanders observed in pools vs. cascades vs. side-channels in 2017? Describe the results of your statistical analysis in text, within the context of broader (and more important) measures of differences between groups (some options: means differences, effect sizes, percent differences, etc). 
--Third, describe any concerns you have about comparing means across the groups. What might be another option to consider moving forward with the analysis? (You don’t need to actually do that here, just describe briefly in 1-2 sentences.)
+#### *Results E:*
+ 
 
 ```{r}
 
@@ -245,13 +247,18 @@ leveneTest(weight ~ unittype, data = anova_channel)
 aov_salamander <- aov(weight ~ unittype, data = anova_channel)
 
 aov_salamander
+aov_outputs <- unlist(summary(aov_salamander))
+
+aov_outputs
 
 summary(aov_salamander)
 
 TukeyHSD(aov_salamander)
-
-
 ```
+Salamanders weights vary across different channels of Mack Creek, and this was found to be significant (*p* = `r round(aov_outputs[9],2)`). Of the three channels, salamanders in Side-Channels and Pools differed the most, with Salamanders in Side-Channels tending to be 3.62 grams heavier on average than those found in Pools. This provides a significant difference in mean weight (p-value = 0.02). While other channel-based means vary, the mean differences in weight remain minimal. Salamanders within Side Channels weigh the most, those in Cascades average in the middle of the three, and salamanders within Pools weigh the least, on average. (*p* = `r round(aov_outputs[9],2)`).
+
+
+All three of these channels have notable outliers in which  heavy salamanders could skew the means.The median weight of salamanders across channels may be a more representative measurement of sampled areas.
 
 
 ```{r}
@@ -270,14 +277,29 @@ channel_graph <- ggplot(data = channel_breakdown, aes(x = unittype, y = weight, 
   theme_bw()
 channel_graph
 
-
-
 ```
 
 
+```{r include=TRUE, echo = FALSE, warning = FALSE, message = FALSE}
+channel_graph
+```
+
+
+### *Summary*
+
+
+- There is no clear difference between salamander abundance between forest sections. 
+- Salamander abundance appears to be highly correlated with the different channels of the creek. While it doesn’t meet the significance level of a=0.05, the measured difference shows some correlation. 
+- Salamander weights change very little across channels. The only noticeable difference comes from side-channel salamanders, which, on average, weigh 3.62 grams more than salamanders within Pools. 
 
 
 
+### *Citations:* 
+Bolsinger, Charles L., and Karen L. Waddell. “Area of Old-Growth Forests in California, Oregon, and Washington.” *United States Department of Agriculture*, 1993, doi:10.2737/pnw-rb-197.
+
+Gregory S. V. 2016. Aquatic Vertebrate Population Study in Mack Creek, Andrews Experimental Forest, 1987 to present. *Environmental Data Initiative.* https://doi.org/10.6073/pasta/5de64af9c11579266ef20da2ff32f702. Dataset accessed 11/19/2019
+
+Mosquera, Giovanny M., Segura, Catalina, and Patricio Crespo. “Flow Partitioning Using High-Resolution Isotopic and Electrical Conductivity Data.” *Water.* 2018, https://doi.org/10.3390/w10070904 
 
 
 
